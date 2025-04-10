@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gesture-Based Control</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">Gesture Control</div>
+            <ul class="nav-links">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Section -->
+    <section class="container">
+        <h1 class="black-heading">Gesture-Based Computer Control</h1>
+        <p>Use your hand gestures to control your computer effortlessly.</p>
+
+        <!-- Start/Stop Tracking Buttons -->
+        <button id="startTracking" class="btn">Start Tracking</button>
+        <button id="stopTracking" class="btn btn-danger" style="display: none;">Stop Tracking</button>
+
+        <!-- Video Feed -->
+        <div class="video-container">
+            <img id="videoFeed" src="about:blank" alt="Live Video Feed" style="display: none;">
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+        const startButton = document.getElementById("startTracking");
+        const stopButton = document.getElementById("stopTracking");
+        const videoFeed = document.getElementById("videoFeed");
+
+        startButton.addEventListener("click", () => {
+            fetch("/start")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "started") {
+                        videoFeed.src = "/video_feed";
+                        videoFeed.style.display = "block";
+                        startButton.style.display = "none";
+                        stopButton.style.display = "inline-block";
+                    }
+                });
+        });
+
+        stopButton.addEventListener("click", () => {
+            fetch("/stop")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "stopped") {
+                        videoFeed.src = "about:blank";
+                        videoFeed.style.display = "none";
+                        startButton.style.display = "inline-block";
+                        stopButton.style.display = "none";
+                    }
+                });
+        });
+    </script>
+
+</body>
+</html>
